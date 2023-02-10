@@ -2,7 +2,7 @@ name: "[Atuomação] Setup de repositório"
 description: "Criação automatizada"
 title: "Criação de repositórios"
 labels: ["setup"]
-assigness: 
+assignees: 
   - ${{github.author}}
 body:
   - type: markdown

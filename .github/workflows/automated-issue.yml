@@ -22,8 +22,8 @@ jobs:
       - name: Parse issue body
         uses: peter-murray/issue-body-parser-action@v1
         with:
-          body: ${{ github.event.issue.body }}
-          fields: repository,template
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_id: ${{ github.event.issue.number }}
       - name: Display issue body
         run: |
           echo "${{ steps.parse_issue_body.outputs.repository }}"

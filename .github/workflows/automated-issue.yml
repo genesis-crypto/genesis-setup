@@ -1,0 +1,24 @@
+name: Criação de Repositório Automatizado
+
+on:
+  issues:
+    types: [opened, reopened]
+  
+jobs:
+  create-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Creating comment
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Criando repositório: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+
+  create-github-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Getting repository information
+        run: |
+        echo "Issue Title: ${{ github.event.issue.title }}"
+        echo "Issue Body: ${{ github.event.issue.body }}"

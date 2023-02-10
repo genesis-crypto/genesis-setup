@@ -1,0 +1,14 @@
+name: Criação de Repositório Automatizado
+
+on:
+  issues:
+    types: [opened, reopened]
+  
+jobs:
+  create-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Creating comment
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          issue-number: ${{ github.event.issue.number }}

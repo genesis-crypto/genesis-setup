@@ -19,15 +19,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-
-    - name: Parse Issue Body
-      run: |
-        REPOSITORY_NAME=$(echo "$GITHUB_EVENT_PATH" | jq -r '.issue.body' | grep -oP '"id": "repository".*"value": "\K[^"]+')
-        TEMPLATE_NAME=$(echo "$GITHUB_EVENT_PATH" | jq -r '.issue.body' | grep -oP '"id": "template".*"selected_option": "\K[^"]+')
-        echo "::set-env name=REPOSITORY_NAME::$REPOSITORY_NAME"
-        echo "::set-env name=TEMPLATE_NAME::$TEMPLATE_NAME"
+      - name: Parse issue body
+        uses: peter-murray/issue-body-parser-action@v1
+        with:
+          body: ${{ github.event.issue.body }}
+          fields: repository,template
+      - name: Display issue body
+        run: |
+          echo "${{ steps.parse_issue_body.outputs.repository }}"
+          echo "${{ steps.parse_issue_body.outputs.template }}"
 
   create-github-repo:
     runs-on: ubuntu-latest

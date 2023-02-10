@@ -20,5 +20,5 @@ jobs:
     steps:
       - name: Getting repository information
         run: |
-        echo "Issue Title: ${{ github.event.issue.title }}"
-        echo "Issue Body: ${{ github.event.issue.body }}"
+          echo "Issue Title: ${{ github.event.issue.title }}"
+          echo "Issue Body: ${{ github.event.issue.body }}"

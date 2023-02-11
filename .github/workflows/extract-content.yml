@@ -8,21 +8,22 @@ jobs:
   extract-content:
     runs-on: ubuntu-latest
     steps:
-    - name: Extracting content
-      run: |
-        issue_body=$(echo "${{ github.event.issue.body }}" | jq -r .issue.body)
-        repository=$(echo "$issue_body" | grep -oP '\[Repository\].*?(\S+)' | cut -d ' ' -f2)
-        template=$(echo "$issue_body" | grep -oP '\[Template\].*?(\S+)' | cut -d ' ' -f2)
-        echo "Repository: $repository"
-        echo "Template: $template"
-        echo "::set-output name=repository::$repository"
-        echo "::set-output name=template::$template"
-
-    - name: Save output to cache
-      id: save-on-cache
+    - name: Restore cache
       uses: actions/cache@v2
       with:
-        path: outputs
-        key: ${{ runner.os }}-extract-content-${{ hashFiles('outputs/repository outputs/template') }}
+        path: output.json
+        key: ${{ runner.os }}-pandoc-${{ hashFiles('**/output.json') }}
         restore-keys: |
-          ${{ runner.os }}-extract-content-
+          ${{ runner.os }}-pandoc-
+          
+    - name: Convert markdown to JSON
+      run: |
+        issue_body=$(echo "$GITHUB_EVENT_PATH" | jq -r .issue.body)
+        pandoc -s -f markdown -t json <(echo "$issue_body") > output.json
+      shell: bash
+    
+    - name: Save cache
+      uses: actions/cache@v2
+      with:
+        path: output.json
+        key: ${{ runner.os }}-pandoc-${{ hashFiles('**/output.json') }}

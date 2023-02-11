@@ -11,20 +11,17 @@ jobs:
   extract-content:
     runs-on: ubuntu-latest
     steps:
-      - name: Extract values
-        id: extract
+      - name: Extract repository information from issue body
+        id: extract_info
         run: |
-          REPOSITORY=$(echo "${{ github.event.issue.body }}" | grep -Eo '### \[Repository\].*genesis-setup' | awk 'NF>1{print $NF}')
-          TEMPLATE=$(echo "${{ github.event.issue.body }}" | grep -Eo '### \[Template\].*genesis-template-node' | awk 'NF>1{print $NF}')
-          echo ::set-env name=REPOSITORY::$REPOSITORY
-          echo ::set-env name=TEMPLATE::$TEMPLATE
-
-      - name: Save to cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ${{ env.REPOSITORY }}/${{ env.TEMPLATE }}
-          key: |
-            ${{ env.REPOSITORY }}-${{ env.TEMPLATE }}-v1
-          restore-keys: |
-            ${{ env.REPOSITORY }}-${{ env.TEMPLATE }}-v1
+          const issueBody = "${{ github.event.issue.body }}";
+          const lines = issueBody.split("\n");
+          console.log(lines)
+          const nameLine = lines.find(line => line.startsWith("## [Repository]"));
+          const descLine = lines.find(line => line.startsWith("## Description:"));
+          const name = nameLine.substring("# Repository Name:".length).trim();
+          const description = descLine.substring("# Description:".length).trim();
+          console.log(`Repository Name: ${name}`);
+          console.log(`Description: ${description}`);
+          echo ::set-output name=repo_name::$name
+          echo ::set-output name=repo_description::$description

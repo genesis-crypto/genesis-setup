@@ -32,16 +32,8 @@ jobs:
           REPOSITORY_NAME=${{ steps.parse-body.outputs.repository }}
           TEMPLATE=${{ steps.parse-body.outputs.template }}
 
-  create-github-repo:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create repository
-        run: |
-          REPO_NAME=$REPOSITORY_NAME
-          REPO_DESCRIPTION=$TEMPLATE
-
           curl -H "Authorization: token $GITHUB_TOKEN" \
-              -d "{\"name\":\"$REPO_NAME\",\"private\":true,\"description\":\"$REPO_DESCRIPTION\"}" \
+              -d "{\"name\":\"$REPOSITORY_NAME\",\"private\":true,\"description\":\"$TEMPLATE\"}" \
               https://api.github.com/user/repos
   
   close-github-issue:

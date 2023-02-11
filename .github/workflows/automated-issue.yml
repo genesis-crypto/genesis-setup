@@ -17,17 +17,16 @@ jobs:
 
   parse-issue-body:
     runs-on: ubuntu-latest
-
     steps:
       - name: Parse issue body
         uses: peter-murray/issue-body-parser-action@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          issue_id: ${{ github.event.issue.number }}
+          args: '--template= --repository='
+        id: parser
       - name: Display issue body
         run: |
-          echo "${{ steps.parse_issue_body.outputs.repository }}"
-          echo "${{ steps.parse_issue_body.outputs.template }}"
+          echo "${{ steps.parser.outputs.repository }}"
+          echo "${{ steps.parser.outputs.template }}"
 
   create-github-repo:
     runs-on: ubuntu-latest

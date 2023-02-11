@@ -18,24 +18,25 @@ jobs:
   parse-issue-body:
     runs-on: ubuntu-latest
     steps:
-      - name: Parse Issue Body
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Parse issue body
         id: parse_body
         run: |
-          function parseKeyValue(string) {
-            const lines = string.split('\n');
-            const result = {};
-            lines.forEach((line) => {
-              const [key, value] = line.split(': ');
-              result[key] = value;
-            });
-            return result;
-          }
+          echo "## Issue Body\n${{ github.event.issue.body }}"
 
-          const body = parseKeyValue(github.event.issue.body);
-          const { template, repository } = body;
+          # Extract repository name
+          REPO_NAME=$(echo "${{ github.event.issue.body }}" | grep -oP '(?<=Nome do repositório\n\n).*(?=\n\n###)')
+          echo "## Repository Name\n$REPO_NAME"
 
-          console.log(`template: ${template}`);
-          console.log(`repository: ${repository}`);
+          # Extract repository template
+          REPO_TEMPLATE=$(echo "${{ github.event.issue.body }}" | grep -oP '(?<=Template\n\n).*')
+          echo "## Repository Template\n$REPO_TEMPLATE"
+
+          # Store extracted data as outputs
+          echo "::set-output name=repo_name::$REPO_NAME"
+          echo "::set-output name=repo_template::$REPO_TEMPLATE"
 
   create-github-repo:
     runs-on: ubuntu-latest

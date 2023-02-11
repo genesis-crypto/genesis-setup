@@ -25,7 +25,7 @@ jobs:
         uses: peter-murray/issue-body-parser-action@v1
         id: parse-body
         with:
-          issue-number: ${{ github.event.issue.number }}
+          issue_id: ${{ github.event.issue.number }}
 
       - name: Create repository
         run: |

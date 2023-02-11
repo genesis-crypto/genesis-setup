@@ -38,3 +38,9 @@ jobs:
         run: |
           echo "Issue Title: ${{ github.event.issue.title }}"
           echo "Issue Body: ${{ github.event.issue.body }}"
+  
+  close-github-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close issue
+        uses: actions/close-issue@v1

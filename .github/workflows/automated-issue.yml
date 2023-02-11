@@ -18,17 +18,24 @@ jobs:
   parse-issue-body:
     runs-on: ubuntu-latest
     steps:
-      - name: Parse issue body
-        uses: peter-murray/issue-body-parser-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          issue_id: ${{ github.event.issue.number }}
-
-        id: parser
-      - name: Display issue body
+      - name: Parse Issue Body
+        id: parse_body
         run: |
-          echo "${{ steps.parser.outputs.repository }}"
-          echo "${{ steps.parser.outputs.template }}"
+          function parseKeyValue(string) {
+            const lines = string.split('\n');
+            const result = {};
+            lines.forEach((line) => {
+              const [key, value] = line.split(': ');
+              result[key] = value;
+            });
+            return result;
+          }
+
+          const body = parseKeyValue(github.event.issue.body);
+          const { template, repository } = body;
+
+          console.log(`template: ${template}`);
+          console.log(`repository: ${repository}`);
 
   create-github-repo:
     runs-on: ubuntu-latest

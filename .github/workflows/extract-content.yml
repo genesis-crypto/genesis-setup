@@ -1,31 +1,33 @@
-name: Extract Content ⚒
+name: "Extract Content ⚒"
 
 on: 
   issues:
     types: [opened, reopened]
 
 jobs:
-  issue-extractor:
+  extract-content:
     runs-on: ubuntu-latest
-    steps:
-      - name: Extracting content
-        run: |
-          content=$(grep -E '(^### \[Repository\]$|^### \[Template\]$)' input-file.txt)
-          repository=$(echo "$content" | grep -E '^### \[Repository\]$' -A1 | tail -1)
-          template=$(echo "$content" | grep -E '^### \[Template\]$' -A1 | tail -1)
-          echo "Repository: $repository"
-          echo "Template: $template"
-          echo "::set-output name=repository::$repository"
-          echo "::set-output name=template::$template"
-      outputs:
-        repository: ${{ steps.extract-content.outputs.repository }}
-        template: ${{ steps.extract-content.outputs.template }}
 
-      - name: Save output to cache
-        id: save-on-cache
-        uses: actions/cache@v2
-        with:
-          path: outputs
-          key: ${{ runner.os }}-extract-content-${{ hashFiles('outputs/repository outputs/template') }}
-          restore-keys: |
-            ${{ runner.os }}-extract-content-
+    steps:
+    - name: Extracting content
+      run: |
+        content=$(grep -E '(^### \[Repository\]$|^### \[Template\]$)' input-file.txt)
+        repository=$(echo "$content" | grep -E '^### \[Repository\]$' -A1 | tail -1)
+        template=$(echo "$content" | grep -E '^### \[Template\]$' -A1 | tail -1)
+        echo "Repository: $repository"
+        echo "Template: $template"
+        echo "::set-output name=repository::$repository"
+        echo "::set-output name=template::$template"
+
+    outputs:
+      repository: ${{ steps.extract-content.outputs.repository }}
+      template: ${{ steps.extract-content.outputs.template }}
+
+    - name: Save output to cache
+      id: save-on-cache
+      uses: actions/cache@v2
+      with:
+        path: outputs
+        key: ${{ runner.os }}-extract-content-${{ hashFiles('outputs/repository outputs/template') }}
+        restore-keys: |
+          ${{ runner.os }}-extract-content-

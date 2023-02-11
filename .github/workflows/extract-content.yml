@@ -1,4 +1,4 @@
-name: "Extract Content ⚒"
+name: Extract Content
 
 on: 
   issues:
@@ -7,7 +7,6 @@ on:
 jobs:
   extract-content:
     runs-on: ubuntu-latest
-
     steps:
     - name: Extracting content
       run: |

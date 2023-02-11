@@ -15,6 +15,22 @@ jobs:
           body: |
             Criando repositório: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 
+  parse-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse issue body
+        uses: peter-murray/issue-body-parser-action@v1
+        id: parse-body
+        with:
+          issue-number: ${{ github.event.issue.number }}
+
+      - name: Create repository
+        run: |
+          REPOSITORY_NAME=${{ steps.parse-body.outputs.repository }}
+          TEMPLATE=${{ steps.parse-body.outputs.template }}
+          echo "Creating repository $REPOSITORY_NAME using template $TEMPLATE..."
+          # Add commands to create the repository here
+
   create-github-repo:
     runs-on: ubuntu-latest
     steps:

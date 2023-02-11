@@ -17,12 +17,22 @@ jobs:
 
   create-repository:
     runs-on: ubuntu-latest
-    needs: [extract-content, create-comment]
+    needs: [create-comment]
     steps:
-      - name: Echo
+      - name: Restore outputs from cache
+        id: restore-cache
+        uses: actions/cache@v2
+        with:
+          path: outputs
+          key: ${{ runner.os }}-extract-content-${{ hashFiles('outputs/repository outputs/template') }}
+      - name: Use extracted content
+        if: steps.restore-cache.outputs.cache-hit == 'true'
         run: |
-          echo ${{ needs.extract-content.outputs }}
-  
+          repository="$(cat outputs/repository)"
+          template="$(cat outputs/template)"
+          echo "Repository: $repository"
+          echo "Template: $template"
+
   close-github-issue:
     runs-on: ubuntu-latest
     needs: create-repository

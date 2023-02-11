@@ -10,6 +10,9 @@ jobs:
     steps:
     - name: Install pandoc
       run: sudo apt-get install pandoc -y
+    
+    - name: Install jq
+      run: sudo apt-get install jq -y
 
     - name: Restore cache
       uses: actions/cache@v2
@@ -25,11 +28,21 @@ jobs:
         pandoc -s -f markdown -t json <(echo "$issue_body") > output.json
       shell: bash
 
-    - name: Output JSON content
-      run: cat output.json
+    - name: Extract values from JSON
+      run: |
+        repo=$(cat output.json | jq -r '.blocks[] | select(.t == "Para") | .c[0].c[0].text')
+        setup=$(cat output.json | jq -r '.blocks[] | select(.t == "Para") | .c[1].c[0].text')
+        echo "::set-output name=genesis_setup::$genesis_setup"
+        echo "::set-output name=genesis_template_node::$genesis_template_node"
 
-    - name: Save cache
+    - name: Save values to cache
       uses: actions/cache@v2
       with:
         path: output.json
-        key: ${{ runner.os }}-pandoc-${{ hashFiles('**/output.json') }}
+        key: ${{ runner.os }}-genesis_values-${{ hashFiles('**/output.json') }}
+        restore-keys: |
+          ${{ runner.os }}-genesis_values-
+        actions: save
+        value-outputs: |
+          repo
+          setup

@@ -18,7 +18,7 @@ jobs:
           body: |
             Criando repositório: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 
-  parse-issue:
+  create-github-repo:
     runs-on: ubuntu-latest
     steps:
       - name: Parse issue body
@@ -31,7 +31,6 @@ jobs:
         run: |
           REPOSITORY_NAME=${{ steps.parse-body.outputs.repository }}
           TEMPLATE=${{ steps.parse-body.outputs.template }}
-
           curl -H "Authorization: token $GITHUB_TOKEN" \
               -d "{\"name\":\"$REPOSITORY_NAME\",\"private\":true,\"description\":\"$TEMPLATE\"}" \
               https://api.github.com/user/repos

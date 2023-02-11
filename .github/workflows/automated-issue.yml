@@ -15,36 +15,12 @@ jobs:
           body: |
             Criando repositório: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 
-  parse-issue-body:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Parse issue body
-        id: parse_body
-        run: |
-          echo "## Issue Body\n${{ github.event.issue.body }}"
-
-          # Extract repository name
-          REPO_NAME=$(echo "${{ github.event.issue.body }}" | grep -oP '(?<=Nome do repositório\n\n).*(?=\n\n###)')
-          echo "## Repository Name\n$REPO_NAME"
-
-          # Extract repository template
-          REPO_TEMPLATE=$(echo "${{ github.event.issue.body }}" | grep -oP '(?<=Template\n\n).*')
-          echo "## Repository Template\n$REPO_TEMPLATE"
-
-          # Store extracted data as outputs
-          echo "::set-output name=repo_name::$REPO_NAME"
-          echo "::set-output name=repo_template::$REPO_TEMPLATE"
-
   create-github-repo:
     runs-on: ubuntu-latest
     steps:
       - name: Getting repository information
         run: |
-          echo "Repo Name: ${{ steps.parse_body.outputs.repo_name }}"
-          echo "Repo Template: ${{ steps.parse_body.outputs.repo_template }}"
+          echo "Repo Name: ${{ github.event.issue.body }}"
   
   close-github-issue:
     runs-on: ubuntu-latest

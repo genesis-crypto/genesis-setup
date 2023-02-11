@@ -11,8 +11,8 @@ jobs:
     - name: Extracting content
       run: |
         content=$(echo "${{ github.event.issue.body }}" | grep -E '(^### \[Repository\]$|^### \[Template\]$)')
-        repository=$(echo "$content" | awk '/^### \[Repository\]$/{getline; print}')
-        template=$(echo "$content" | awk '/^### \[Template\]$/{getline; print}')
+        repository=$(echo "$content" | awk '/^### \[Repository\]$/{p=1;next}/^### \[Template\]$/{p=0}p' | tail -n +2 | head -n -1)
+        template=$(echo "$content" | awk '/^### \[Template\]$/{p=1;next}p' | tail -n +2)
         echo "Repository: $repository"
         echo "Template: $template"
         echo "::set-output name=repository::$repository"

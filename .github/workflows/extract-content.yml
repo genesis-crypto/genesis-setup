@@ -8,49 +8,20 @@ jobs:
   extract-content:
     runs-on: ubuntu-latest
     steps:
-    - name: Install pandoc
-      run: sudo apt-get install pandoc -y
-    
-    - name: Install jq
-      run: sudo apt-get install jq -y
+      - name: Extract values
+        id: extract
+        run: |
+          REPOSITORY=$(echo "${{ github.event.issue.body }}" | grep -Eo '### \[Repository\].*genesis-setup' | awk 'NF>1{print $NF}')
+          TEMPLATE=$(echo "${{ github.event.issue.body }}" | grep -Eo '### \[Template\].*genesis-template-node' | awk 'NF>1{print $NF}')
+          echo ::set-env name=REPOSITORY::$REPOSITORY
+          echo ::set-env name=TEMPLATE::$TEMPLATE
 
-    - name: Convert Markdown to JSON
-      uses: pandoc/action-pandoc@v2
-      with:
-        args: -f markdown -t json
-      id: convert
-    
-    - name: Extract values
-      run: |
-        # Extract the blocks from the JSON
-        blocks=$(echo "${{ steps.convert.outputs.result }}" | jq '.blocks')
-
-        # Find the "repository" header
-        repository_header=$(echo "$blocks" | jq '.[] | select(.c[0][0] == "repository")')
-        
-        # Extract the "genesis-setup" value from the repository header
-        genesis_setup=$(echo "$repository_header" | jq '.c[1][0].c')
-        
-        # Find the "template" header
-        template_header=$(echo "$blocks" | jq '.[] | select(.c[0][0] == "template")')
-        
-        # Extract the "genesis-template-node" value from the template header
-        genesis_template_node=$(echo "$template_header" | jq '.c[1][0].c')
-
-    - name: Save values in cache
-      uses: actions/cache@v2
-      with:
-        path: |
-          values
-        key: |
-          ${{ env.GITHUB_SHA }}
-        restore-keys: |
-          ${{ env.GITHUB_SHA }}
-        save-cache-exit-status: 0
-        force: true
-        workdir: |
-          values
-      env:
-        GENESIS_SETUP: "$genesis_setup"
-        GENESIS_TEMPLATE_NODE: "$genesis_template_node"
-
+      - name: Save to cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ env.REPOSITORY }}/${{ env.TEMPLATE }}
+          key: |
+            ${{ env.REPOSITORY }}-${{ env.TEMPLATE }}-v1
+          restore-keys: |
+            ${{ env.REPOSITORY }}-${{ env.TEMPLATE }}-v1

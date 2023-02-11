@@ -28,15 +28,15 @@ jobs:
         run: |
           REPOSITORY_NAME=${{ steps.parse-body.outputs.repository }}
           TEMPLATE=${{ steps.parse-body.outputs.template }}
-          echo "Creating repository $REPOSITORY_NAME using template $TEMPLATE..."
-          # Add commands to create the repository here
 
   create-github-repo:
     runs-on: ubuntu-latest
     steps:
       - name: Getting repository information
-        run: |
-          echo "Repo Name: ${{ github.event.issue.body }}"
+        uses: peter-evans/create-repo@v2
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
+          name: "$REPOSITORY_NAME"
   
   close-github-issue:
     runs-on: ubuntu-latest

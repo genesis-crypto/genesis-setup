@@ -19,7 +19,7 @@ jobs:
             Criando repositório: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 
   create-repository:
-    runs-one: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Echo
         run: |
@@ -27,7 +27,7 @@ jobs:
   
   close-github-issue:
     runs-on: ubuntu-latest
-    needs: [create-github-repo, create-comment]
+    needs: [create-repository, create-comment]
     steps:
       - name: Close issue
         uses: peter-evans/close-issue@v2

@@ -4,6 +4,9 @@ on:
   issues:
     types: [opened, reopened]
 
+env:
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
 jobs:
   extract-content:
     runs-on: ubuntu-latest

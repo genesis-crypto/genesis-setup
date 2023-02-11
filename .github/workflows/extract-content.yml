@@ -18,10 +18,6 @@ jobs:
         echo "::set-output name=repository::$repository"
         echo "::set-output name=template::$template"
 
-    outputs:
-      repository: ${{ steps.extract-content.outputs.repository }}
-      template: ${{ steps.extract-content.outputs.template }}
-
     - name: Save output to cache
       id: save-on-cache
       uses: actions/cache@v2

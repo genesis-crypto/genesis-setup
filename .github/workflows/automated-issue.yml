@@ -25,6 +25,7 @@ jobs:
         uses: peter-murray/issue-body-parser-action@v1
         id: parse-body
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           issue_id: ${{ github.event.issue.number }}
 
       - name: Create repository

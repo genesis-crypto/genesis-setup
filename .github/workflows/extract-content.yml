@@ -14,35 +14,43 @@ jobs:
     - name: Install jq
       run: sudo apt-get install jq -y
 
-    - name: Restore cache
+    - name: Convert Markdown to JSON
+      uses: pandoc/action-pandoc@v2
+      with:
+        args: -f markdown -t json
+      id: convert
+    
+    - name: Extract values
+      run: |
+        # Extract the blocks from the JSON
+        blocks=$(echo "${{ steps.convert.outputs.result }}" | jq '.blocks')
+
+        # Find the "repository" header
+        repository_header=$(echo "$blocks" | jq '.[] | select(.c[0][0] == "repository")')
+        
+        # Extract the "genesis-setup" value from the repository header
+        genesis_setup=$(echo "$repository_header" | jq '.c[1][0].c')
+        
+        # Find the "template" header
+        template_header=$(echo "$blocks" | jq '.[] | select(.c[0][0] == "template")')
+        
+        # Extract the "genesis-template-node" value from the template header
+        genesis_template_node=$(echo "$template_header" | jq '.c[1][0].c')
+
+    - name: Save values in cache
       uses: actions/cache@v2
       with:
-        path: output.json
-        key: ${{ runner.os }}-pandoc-${{ hashFiles('**/output.json') }}
+        path: |
+          values
+        key: |
+          ${{ env.GITHUB_SHA }}
         restore-keys: |
-          ${{ runner.os }}-pandoc-
-          
-    - name: Convert markdown to JSON
-      run: |
-        issue_body="${{ github.event.issue.body }}"
-        pandoc -s -f markdown -t json <(echo "$issue_body") > output.json
-      shell: bash
+          ${{ env.GITHUB_SHA }}
+        save-cache-exit-status: 0
+        force: true
+        workdir: |
+          values
+      env:
+        GENESIS_SETUP: "$genesis_setup"
+        GENESIS_TEMPLATE_NODE: "$genesis_template_node"
 
-    - name: Extract values from JSON
-      run: |
-        repo=$(cat output.json | jq -r '.blocks[] | select(.t == "Para") | .c[0].c[0].text')
-        setup=$(cat output.json | jq -r '.blocks[] | select(.t == "Para") | .c[1].c[0].text')
-        echo "::set-output name=genesis_setup::$genesis_setup"
-        echo "::set-output name=genesis_template_node::$genesis_template_node"
-
-    - name: Save values to cache
-      uses: actions/cache@v2
-      with:
-        path: output.json
-        key: ${{ runner.os }}-genesis_values-${{ hashFiles('**/output.json') }}
-        restore-keys: |
-          ${{ runner.os }}-genesis_values-
-        actions: save
-        value-outputs: |
-          repo
-          setup

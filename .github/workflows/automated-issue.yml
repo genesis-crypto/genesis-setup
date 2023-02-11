@@ -3,7 +3,10 @@ name: Criação de Repositório Automatizado
 on:
   issues:
     types: [opened, reopened]
-  
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   create-comment:
     runs-on: ubuntu-latest
@@ -32,11 +35,14 @@ jobs:
   create-github-repo:
     runs-on: ubuntu-latest
     steps:
-      - name: Getting repository information
-        uses: peter-evans/create-repo@v2
-        with:
-          token: ${{ env.GITHUB_TOKEN }}
-          name: "$REPOSITORY_NAME"
+      - name: Create repository
+        run: |
+          REPO_NAME=$REPOSITORY_NAME
+          REPO_DESCRIPTION=$TEMPLATE
+
+          curl -H "Authorization: token $GITHUB_TOKEN" \
+              -d "{\"name\":\"$REPO_NAME\",\"private\":true,\"description\":\"$REPO_DESCRIPTION\"}" \
+              https://api.github.com/user/repos
   
   close-github-issue:
     runs-on: ubuntu-latest

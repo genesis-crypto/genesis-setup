@@ -22,8 +22,8 @@ jobs:
         uses: peter-murray/issue-body-parser-action@v1
         with:
           args: '--template= --repository='
-          issue_id: ${{ github.event.issue.number }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          issue-id: ${{ github.event.issue.number }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
         id: parser
       - name: Display issue body
@@ -44,3 +44,5 @@ jobs:
     steps:
       - name: Close issue
         uses: actions/close-issue@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}

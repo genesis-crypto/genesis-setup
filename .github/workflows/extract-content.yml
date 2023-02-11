@@ -18,7 +18,7 @@ jobs:
           
     - name: Convert markdown to JSON
       run: |
-        issue_body=$(echo "$GITHUB_EVENT_PATH" | jq -r .issue.body)
+        issue_body="${{ github.event.issue.body }}"
         pandoc -s -f markdown -t json <(echo "$issue_body") > output.json
       shell: bash
     

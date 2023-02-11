@@ -43,8 +43,8 @@ jobs:
     steps:
       - name: Getting repository information
         run: |
-          echo "Issue Title: ${{ github.event.issue.title }}"
-          echo "Issue Body: ${{ github.event.issue.body }}"
+          echo "Repo Name: ${{ steps.parse_body.outputs.repo_name }}"
+          echo "Repo Template: ${{ steps.parse_body.outputs.repo_template }}"
   
   close-github-issue:
     runs-on: ubuntu-latest

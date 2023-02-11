@@ -8,6 +8,9 @@ jobs:
   extract-content:
     runs-on: ubuntu-latest
     steps:
+    - name: Install pandoc
+      run: sudo apt-get install pandoc -y
+
     - name: Restore cache
       uses: actions/cache@v2
       with:

@@ -5,7 +5,7 @@ on:
     types: [opened, reopened]
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ISSUE_CONTEXT: ${{ toJSON(github.event.issue) }}
 
 jobs:
   create-comment:
@@ -18,23 +18,12 @@ jobs:
           body: |
             Criando repositório: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 
-  create-github-repo:
-    runs-on: ubuntu-latest
+  create-repository:
+    runs-one: ubuntu-latest
     steps:
-      - name: Parse issue body
-        uses: peter-murray/issue-body-parser-action@v1
-        id: parse-body
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          issue_id: ${{ github.event.issue.number }}
-
-      - name: Create repository
+      - name: Echo
         run: |
-          REPOSITORY_NAME=${{ steps.parse-body.outputs.repository }}
-          TEMPLATE=${{ steps.parse-body.outputs.template }}
-          curl -H "Authorization: token $GITHUB_TOKEN" \
-              -d "{\"name\":\"$REPOSITORY_NAME\",\"private\":true,\"description\":\"$TEMPLATE\"}" \
-              https://api.github.com/user/repos
+          echo $ISSUE_CONTEXT
   
   close-github-issue:
     runs-on: ubuntu-latest

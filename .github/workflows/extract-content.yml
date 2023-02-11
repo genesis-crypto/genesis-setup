@@ -24,7 +24,10 @@ jobs:
         issue_body="${{ github.event.issue.body }}"
         pandoc -s -f markdown -t json <(echo "$issue_body") > output.json
       shell: bash
-    
+
+    - name: Output JSON content
+      run: cat output.json
+
     - name: Save cache
       uses: actions/cache@v2
       with:

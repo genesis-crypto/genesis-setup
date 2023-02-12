@@ -19,19 +19,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [create-comment]
     steps:
-      - name: Restore outputs from cache
-        id: restore-cache
-        uses: actions/cache@v2
+      - name: Run Issue form parser
+        id: parse
+        uses: peter-murray/issue-forms-body-parser@v2.0.0
         with:
-          path: outputs
-          key: ${{ runner.os }}-extract-content-${{ hashFiles('outputs/repository outputs/template') }}
-      - name: Use extracted content
-        if: steps.restore-cache.outputs.cache-hit == 'true'
+          issue_id: ${{ github.event.issue.number }}
+          separator: '###'
+          label_marker_start: '>>'
+          label_marker_end: '<<'
+
+      - name: Show parsed data JSON
         run: |
-          repository="$(cat outputs/repository)"
-          template="$(cat outputs/template)"
-          echo "Repository: $repository"
-          echo "Template: $template"
+          echo "${{ steps.parse.outputs.payload }}"
 
   close-github-issue:
     runs-on: ubuntu-latest

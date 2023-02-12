@@ -31,6 +31,8 @@ jobs:
       - name: Show parsed data JSON
         run: |
           echo "${{ steps.parse.outputs.payload }}"
+          echo "${{ steps.parse.outputs.payload["Repository"] }}"
+          echo "${{ steps.parse.outputs.payload["Template"] }}"
 
   close-github-issue:
     runs-on: ubuntu-latest

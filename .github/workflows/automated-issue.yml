@@ -31,8 +31,10 @@ jobs:
       - name: Show parsed data JSON
         run: |
           echo "${{ steps.parse.outputs.payload }}"
-          echo "${{ steps.parse.outputs.payload.Repository }}"
-          echo "${{ steps.parse.outputs.payload.Template }}"
+          repository="$(echo "$output" | sed -n 's/Repository:\([^,]*\).*/\1/p')"
+          template="$(echo "$output" | sed -n 's/Template:\([^}]*\).*/\1/p')"
+          echo "Repository: $repository"
+          echo "Template: $template"
 
   close-github-issue:
     runs-on: ubuntu-latest

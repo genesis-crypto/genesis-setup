@@ -21,6 +21,7 @@ jobs:
   create-repository:
     runs-on: ubuntu-latest
     needs: [create-comment]
+    permissions: write-all
     steps:
       - name: Run Issue form parser
         id: parse

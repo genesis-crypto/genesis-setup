@@ -4,24 +4,18 @@ on:
   issues:
     types: [opened, reopened]
 
-env:
-  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
 jobs:
   extract-content:
     runs-on: ubuntu-latest
     steps:
       - name: Extract repository information from issue body
-        id: extract_info
+        id: extract-info
+        uses: peter-murray/issue-forms-body-parser@v2.0.0
+        with:
+          issue_id: ${{ github.event.issue.number }}
+          separator: '###'
+          label_marker_start: '[' 
+          label_marker_end: ']'
+      - name: Show parsed data JSON
         run: |
-          const issueBody = "${{ github.event.issue.body }}";
-          const lines = issueBody.split("\n");
-          console.log(lines)
-          const nameLine = lines.find(line => line.startsWith("## [Repository]"));
-          const descLine = lines.find(line => line.startsWith("## Description:"));
-          const name = nameLine.substring("# Repository Name:".length).trim();
-          const description = descLine.substring("# Description:".length).trim();
-          console.log(`Repository Name: ${name}`);
-          console.log(`Description: ${description}`);
-          echo ::set-output name=repo_name::$name
-          echo ::set-output name=repo_description::$description
+          echo "${{ steps.parse.outputs.payload }}"

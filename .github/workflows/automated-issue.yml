@@ -31,7 +31,7 @@ jobs:
       - name: Show parsed data JSON
         run: |
           echo "${{ steps.parse.outputs.payload }}"
-          output="${{ steps.parse.outputs.payload }}"
+          output=${{ steps.parse.outputs.payload }}
           repository="$(echo \"${{ steps.parse.outputs.payload }}\" | jq -r '.repository')"
           template="$(echo \"${{ steps.parse.outputs.payload }}\" | jq -r '.template')"
           echo "Repository: $repository"

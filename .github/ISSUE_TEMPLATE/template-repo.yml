@@ -12,14 +12,14 @@ body:
   - type: input
     id: repository
     attributes:
-      label: ">>Repository<<"
+      label: ">>repository<<"
       description: Nome do serviço ou aplicação?
     validations:
       required: true
   - type: dropdown
     id: template
     attributes:
-      label: ">>Template<<"
+      label: ">>template<<"
       description: Qual template você deseja?
       options:
         - genesis-template-node

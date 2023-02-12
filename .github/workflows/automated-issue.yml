@@ -33,6 +33,7 @@ jobs:
           label_marker_end: '<<'
 
       - name: Show parsed data JSON
+        id: json-data
         run: |
           echo "${{ steps.parse.outputs.payload }}"
           output="${{ steps.parse.outputs.payload }}"
@@ -42,6 +43,7 @@ jobs:
           echo "Template: $template"
 
       - name: Create repository
+        needs: json-data
         run: |
           curl -X POST \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \

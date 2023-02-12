@@ -32,8 +32,8 @@ jobs:
         run: |
           echo "${{ steps.parse.outputs.payload }}"
           output="${{ steps.parse.outputs.payload }}"
-          repository="$(echo "$output" | jq -r '.Repository')"
-          template="$(echo "$output" | jq -r '.Template')"
+          repository="$(echo \"$output\" | jq -r '.Repository')"
+          template="$(echo \"$output\" | jq -r '.Template')"
           echo "Repository: $repository"
           echo "Template: $template"
 

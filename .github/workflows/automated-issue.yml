@@ -4,6 +4,9 @@ on:
   issues:
     types: [opened, reopened]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   create-comment:
     runs-on: ubuntu-latest
@@ -36,6 +39,14 @@ jobs:
           template="$(echo $output | awk -F '[,:]' '{print $4}' | tr -d '{}')"
           echo "Repository: $repository"
           echo "Template: $template"
+
+      - name: Create repository
+        run: |
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github+json" \
+          -d "{\"name\":\"$repository\",\"description\":\"$template\",\"private\":true}" \
+          https://api.github.com/user/repos
 
   close-github-issue:
     runs-on: ubuntu-latest

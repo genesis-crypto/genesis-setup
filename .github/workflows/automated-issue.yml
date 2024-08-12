@@ -8,6 +8,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+
   create-comment:
     runs-on: ubuntu-latest
     steps:
@@ -42,7 +43,7 @@ jobs:
           template="$(echo $output | awk -F '[,:]' '{print $4}' | tr -d '{}')"
           echo "Repository: $repository"
           echo "Template: $template"
-          gh repo new $repository --internal
+          gh repo new genesis-crypto/$repository --public
 
   close-github-issue:
     runs-on: ubuntu-latest

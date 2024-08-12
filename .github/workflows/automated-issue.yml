@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: genesis-crypto/genesis-setup
-          token: ${{ secrets.GENESIS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Issue form parser
         id: parse
@@ -43,7 +43,7 @@ jobs:
 
       - name: Show parsed data JSON
         env:
-          GITHUB_TOKEN: ${{ secrets.GENESIS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "${{ steps.parse.outputs.payload }}"
           output="${{ steps.parse.outputs.payload }}"

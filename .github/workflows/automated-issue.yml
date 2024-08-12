@@ -39,7 +39,7 @@ jobs:
 
       - name: Show parsed data JSON
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "${{ steps.parse.outputs.payload }}"
           output="${{ steps.parse.outputs.payload }}"

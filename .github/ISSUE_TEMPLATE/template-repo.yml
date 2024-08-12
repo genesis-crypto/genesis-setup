@@ -3,7 +3,7 @@ description: "Criação automatizada"
 title: "Criação de repositórios"
 labels: ["setup"]
 assignees: 
-  - ${{github.author}}
+  - ${{ github.author }}
 body:
   - type: markdown
     attributes:

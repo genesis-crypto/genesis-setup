@@ -49,11 +49,7 @@ jobs:
           template="$(echo $output | awk -F '[,:]' '{print $4}' | tr -d '{}')"
           echo "Repository: $repository"
           echo "Template: $template"
-          curl -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github+json" \
-          -d "{\"name\":\"$repository\",\"description\":\"$template\",\"private\":true}" \
-          https://api.github.com/orgs/genesis-crypto/repos          
+          gh repo new repo-test
 
   close-github-issue:
     runs-on: ubuntu-latest

@@ -42,7 +42,7 @@ jobs:
           template="$(echo $output | awk -F '[,:]' '{print $4}' | tr -d '{}')"
           echo "Repository: $repository"
           echo "Template: $template"
-          gh repo new repo-test
+          gh repo new $repository --internal
 
   close-github-issue:
     runs-on: ubuntu-latest

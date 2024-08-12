@@ -51,8 +51,18 @@ jobs:
           template="$(echo $output | awk -F '[,:]' '{print $4}' | tr -d '{}')"
           echo "Repository: $repository"
           echo "Template: $template"
-          gh repo new genesis-crypto/$repository --public
 
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.repos.create({
+              org: 'genesis-crypto',
+              name: '${repository}',
+              description: '',
+              homepage: '',
+              private: false
+            })
   close-github-issue:
     runs-on: ubuntu-latest
     needs: create-repository
